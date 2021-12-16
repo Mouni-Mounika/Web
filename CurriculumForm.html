@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ <!--  <style>
+   #new {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  </style> -->
+  
+  <!-- function for creating curriculum -->
+
+  <script type="text/javascript">
+  $(document).ready(function(){
+    var lec_Num = 1;
+    $("#save").click(function(){
+      var txt = $("#chap_Name").val();
+      $("#Curriculum").append('<br>' + '<div class="container-md p-3 my-3 border" id = "new_chapter">' + 
+        'Chapter' + lec_Num + ': <strong>' + txt + 
+        '</strong> <br><br>'+
+        '<button id="delete">REMOVE</button></div>'
+                             );
+      lec_Num += 1;
+      $("#remove").click(function(){
+        $('#chap_Name').val('');
+        $("#Curriculum").remove("#chap_Name");
+          });
+      $("#delete").click(function(){
+        $("#new_chapter").hide("#new_chapter");
+      });
+        });
+    });
+  </script>
+</head>
+<body>
+  
+<div class="container p-3 my-3 border" id='Curriculum'>
+  <h1>Lecture Curriculum</h1>
+  <div id="new">
+    <input type = 'text' id = "chap_Name" placeholder="Enter a title">
+    <button id="save">SAVE</button>
+    <button id="remove">Cancel</button>
+  </div>
+</div>
+</body>
+</html>
