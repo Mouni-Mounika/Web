@@ -1,55 +1,150 @@
-<!-- Curriculum Form -->
+<!-- Creating a form -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  <title>Curriculum Form</title>
   <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
- <!--  <style>
-   #new {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-    }
-  </style> -->
   
-  <!-- function for creating curriculum -->
+  <!--creating curriculum -->
 
   <script type="text/javascript">
-  $(document).ready(function(){
-    var lec_Num = 1;
-    $("#save").click(function(){
-      var txt = $("#chap_Name").val();
-      $("#Curriculum").append('<br>' + '<div class="container-md p-3 my-3 border" id = "new_chapter">' + 
-        'Chapter' + lec_Num + ': <strong>' + txt + 
-        '</strong> <br><br>'+
-        '<button id="delete">REMOVE</button></div>'
-                             );
-      lec_Num += 1;
-      $("#remove").click(function(){
-        $('#chap_Name').val('');
-        $("#Curriculum").remove("#chap_Name");
-          });
-      $("#delete").click(function(){
-        $("#new_chapter").hide("#new_chapter");
-      });
-        });
-    });
+    var records= [];
+
+    // To create main curriculum page.
+    
+    function createLectureElement()
+    {
+    $("#curriculum").append(`<br>
+       <div class="container p-3 my-3 border" id = "lec_Box${records.length}">
+          <label>New Lecture:${records.length+1}</label>
+          <input id = "text_Box${records.length}" type = "text" class = "Lecture_Name" maxlength = 80; placeholder = "Enter a title" style = "Width: 800px">
+          <button id = "add${records.length}" onclick="add(this.id)" class="Add" style="margin-left: 600px">Add Lecture</button>
+          <button id = "Remove${records.length}" onclick="remove(this.id)"><span class="glyphicon glyphicon-trash"></span></button>
+       </div>
+         `);
+    }
+
+    // addinng lecture element
+
+    function add(ID)
+    {
+      ID=ID.slice(3);
+      addLecture(ID);
+      addLecEle(ID);
+      console.log(records);
+    }
+
+    // For adding record into object.
+
+    function addLecture(index)
+    {
+      let text_Box_ID="#text_Box"+index;
+      let lecture_Box_ID="#lec_Box"+index;
+      let lec_Name = $(text_Box_ID).val();
+      let record={text_BoxID:text_Box_ID,lecture_Name:lec_Name,lecture_BoxID:lecture_Box_ID};
+      records.push(record);
+    }
+
+    // To add lecture element
+
+    function addLecEle(index)
+    {
+      var lecture_Box_ID="#lec_Box"+index;
+      $(lecture_Box_ID).replaceWith(lectureElement(index))
+    }
+
+    // To create lecture element.
+    
+    function lectureElement(index)
+    {
+      index=parseInt(index);
+      $("#curriculum").append(`
+      <div class="container p-3 my-3 border" id = "lec_Box${index}">
+        <label id=label${index}>Lecture${index+1}: ${records[index].lecture_Name}</label><br>
+        <button onclick ="editLectureName('${index}')" >
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+        <button id = "Remove${index}" onclick="remove(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
+       </div>`);
+    }
+  
+    //To remove a lecture element and object.
+
+    function remove(ID)
+    {
+      ID=ID.slice(6);
+      deleteLecRecord(ID);
+      $("#curriculum").empty();
+      records.forEach(renderLectures);
+    }
+
+    // function to remove a lecture record.
+
+    function deleteLecRecord(index)
+    {
+      records.splice(index,1);
+      console.log(records);
+    }
+
+    // function to remove lecture element.
+
+    function renderLectures(record,index)
+    {
+      record.text_BoxID="#text_Box"+index;
+      record.lecture_BoxID="#lec_Box" +index;
+      lectureElement(index);
+    }
+
+    //To edit lecture name
+
+    function editLectureName(index)
+    {
+      // changeLecName(index);
+      let label_ID="#label"+index;
+      let old_Lec_Name = records[index].lecture_Name;
+      $(label_ID).replaceWith(`<input id = "text_Box${index}" type = "text" class = "Lecture_Name" maxlength = 80; placeholder = "Enter Lecture Name" style = "Width: 600px" value = '${old_Lec_Name}'>
+        <button class ="Save_Lecture_Name" id ="Save${index}" onclick = "save('${index}')">Save Lecture</button>`);
+    }
+
+    // To save the new lecture name
+
+    function save(index)
+    {
+      saveLecName(index);
+      saveLecEle(index);
+      console.log(records);
+    }
+
+    function saveLecEle(index)
+    {
+      index=parseInt(index);
+      $(records[index].text_BoxID).replaceWith(`<label id = "label${index}">Lecture${index+1}: ${records[index].lecture_Name}</label>`);
+      $(`#Save${index}`).attr("hidden",true);
+    }
+
+    // saving new lecture name
+
+    function saveLecName(index)
+    {
+      let new_Lec_Name = $(records[index].text_BoxID).val();
+      records[index].lecture_Name=new_Lec_Name
+    }
   </script>
 </head>
-<body>
-  
-<div class="container p-3 my-3 border" id='Curriculum'>
-  <h1>Lecture Curriculum</h1>
-  <div id="new">
-    <input type = 'text' id = "chap_Name" placeholder="Enter a title">
-    <button id="save">SAVE</button>
-    <button id="remove">Cancel</button>
+
+<body>  
+<div class="container p-3 my-3 border" id='Curriculum_Form'>
+  <h5>Unpublished section:</h5>
+  <button id="create" class="create" onclick="createLectureElement()">ADD</button>
+  <div id="curriculum">
   </div>
 </div>
 </body>
