@@ -17,12 +17,13 @@
 
   <script type="text/javascript">
     var records= [];
+    var root_ID="#curriculum";
 
     // To create main curriculum page.
     
     function createLectureElement()
     {
-    $("#curriculum").append(`<br>
+    $(root_ID).append(`<br>
        <div class="container p-3 my-3 border" id = "lec_Box${records.length}">
           <label>New Lecture:${records.length+1}</label>
           <input id = "text_Box${records.length}" type = "text" class = "Lecture_Name" maxlength = 80; placeholder = "Enter a title" style = "Width: 800px">
@@ -66,7 +67,7 @@
     function lectureElement(index)
     {
       index=parseInt(index);
-      $("#curriculum").append(`
+      $(root_ID).append(`
       <div class="container p-3 my-3 border" id = "lec_Box${index}">
         <label id=label${index}>Lecture${index+1}: ${records[index].lecture_Name}</label><br>
         <button onclick ="editLectureName('${index}')" >
