@@ -86,36 +86,36 @@
     }
 
 
-    function addContent(ID)
+    function addContent(id)
     {
-      ID=ID.slice(7);
-      let lecId="#lecBox"+ID;
+      id=id.slice(7);
+      let lecId="#lecBox"+id;
       $(lecId).append(`<br>
         <div id="contentArea">
-        <textarea id="textArea${ID}" placeholder="Enter Your content" rows="4" cols="150"></textarea>
-        <button type="button" id="content${ID}" onclick="getContent(this.id)">Get Textarea Content</button>
+        <textarea id="textArea${id}" placeholder="Enter Your content" rows="4" cols="150"></textarea>
+        <button type="button" id="content${id}" onclick="getContent(this.id)">Get Textarea Content</button>
         </div>
             `)
     }
     
 
-    function getContent(ID)
+    function getContent(id)
     {
-      ID=ID.slice(7);
-      let text="#textArea"+ID 
-      curriculumIndex[ID].content=$(text).val()
+      id=id.slice(7);
+      let text="#textArea"+id 
+      curriculumIndex[id].content=$(text).val()
       let textvalue=$(text).val()
-      saveContent("#contentArea",ID)
+      saveContent("#contentArea",id)
       console.log(curriculumIndex)
     }
 
-    function getEditedContent(ID)
+    function getEditedContent(id)
     {
-      ID=ID.slice(7);
-      let text="#textArea"+ID 
-      curriculumIndex[ID].content=$(text).val()
+      id=id.slice(7);
+      let text="#textArea"+id 
+      curriculumIndex[id].content=$(text).val()
       let textvalue=$(text).val()
-      saveContent("#contents"+ID,ID)
+      saveContent("#contents"+id,id)
     }
 
     function saveContent(eleId,id)
@@ -175,20 +175,18 @@
 
     // for editing content
 
-    function editContent(ID)
+    function editContent(id)
     {
-      let text="#textArea"+ID 
-      let con=curriculumIndex[ID].content
-      console.log("conis"+con);
-      $("#contents"+ID).replaceWith(`<br>
-        <div id="contents${ID}">
-        <textarea id="textArea${ID}" placeholder="Enter Your content" rows="4" cols="150" value="${con}">${con}</textarea>
-        <button type="button" id="content${ID}" onclick="getEditedContent(this.id)">Get Content</button>
+      let text="#textArea"+id 
+      let oldContent=curriculumIndex[id].content
+      // console.log("conis"+oldContent);
+      $("#contents"+id).replaceWith(`<br>
+        <div id="contents${id}">
+        <textarea id="textArea${id}" placeholder="Enter Your content" rows="4" cols="150" value="${oldContent}">${oldContent}</textarea>
+        <button type="button" id="content${id}" onclick="getEditedContent(this.id)">Get Content</button>
         </div>
             `)
     }
-
-   
    function saveEditedContent(record,id)
     {
       if(Object.keys(record).length=='3')
