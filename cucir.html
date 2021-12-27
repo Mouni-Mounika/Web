@@ -1,0 +1,252 @@
+<!-- Creating a form -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Curriculum Form</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <!--creating curriculum -->
+
+  <script type="text/javascript">
+    var curriculumIndex= [];
+    var rootId="#curriculum";
+
+    // To create main curriculum page.
+    
+    function createLectureElement()
+    {
+    $(rootId).append(`<br>
+       <div class="container p-3 my-3 border" id = "lecBox${curriculumIndex.length}">
+          <label>New Lecture:${curriculumIndex.length+1}</label>
+          <input id = "textBox${curriculumIndex.length}" type = "text" class = "LectureName" maxlength = 80; placeholder = "Enter a title" style = "Width: 800px">
+          <button id = "add${curriculumIndex.length}" onclick="addLecture(this.id)" class="Add" style="margin-left: 600px">Add Lecture</button>
+          <button id = "Remove${curriculumIndex.length}" onclick="deleteLecRecord(this.id)"><span class="glyphicon glyphicon-trash"></span></button>
+       </div>
+         `);
+    }
+
+    // For adding record into object.
+
+    function addLecture(index)
+    {
+      index=index.slice(3);
+      console.log(index)
+      let lecName = $("#textBox"+index).val();
+      let record={id:index,lectureName:lecName};
+      curriculumIndex.push(record);
+      addLecEle(index);
+    }
+
+    // To add lecture element
+
+    function addLecEle(index)
+    {
+      $(rootId).empty();
+      curriculumIndex.forEach(renderLectures);
+      curriculumIndex.forEach(saveEditedContent)
+      console.log(curriculumIndex)
+    }
+
+    // To create lecture element.
+    
+    function renderLectures(record,index)
+    {
+      record.id=index;
+      index=parseInt(index);
+      $(rootId).append(`
+      <div class="container p-3 my-3 border" id = "lecBox${index}">
+        <label id=label${index}>Lecture${index+1}: ${curriculumIndex[index].lectureName}</label><br>
+        <button onclick ="editLectureName('${index}')" >
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+        <button id ="content${index}" onclick="addContent(this.id)">+content</button>
+        <button id = "Remove${index}" onclick="deleteLecRecord(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
+       </div>`);
+    }
+
+
+    // function to remove a lecture record.
+
+    function deleteLecRecord(index)
+    {
+      index=index.slice(6);
+      curriculumIndex.splice(index,1);
+      console.log(curriculumIndex);
+      $(rootId).empty();
+      curriculumIndex.forEach(renderLectures);
+      curriculumIndex.forEach(saveEditedContent)
+    }
+
+
+    function addContent(ID)
+    {
+      ID=ID.slice(7);
+      let lecId="#lecBox"+ID;
+      $(lecId).append(`<br>
+        <div id="contentArea">
+        <textarea id="textArea${ID}" placeholder="Enter Your content" rows="4" cols="150"></textarea>
+        <button type="button" id="content${ID}" onclick="getContent(this.id)">Get Textarea Content</button>
+        </div>
+            `)
+    }
+    
+
+    function getContent(ID)
+    {
+      ID=ID.slice(7);
+      let text="#textArea"+ID 
+      curriculumIndex[ID].content=$(text).val()
+      let textvalue=$(text).val()
+      saveContent("#contentArea",ID)
+      console.log(curriculumIndex)
+    }
+
+    function getEditedContent(ID)
+    {
+      ID=ID.slice(7);
+      let text="#textArea"+ID 
+      curriculumIndex[ID].content=$(text).val()
+      let textvalue=$(text).val()
+      saveContent("#contents"+ID,ID)
+    }
+
+    function saveContent(eleId,id)
+    {
+      let contentValue=curriculumIndex[id].content
+      $(eleId).replaceWith(
+        `
+        <div class="container p-3 my-3 border" id = "contents${id}">
+        <label id="content${id}">Content:${contentValue}</label> 
+        <button onclick ="editContent('${id}')" >
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+        <button id = "Remove${id}" onclick="removeContent(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>
+        `
+        )
+    }
+
+    function contentElement(id,contentValue)
+    {
+      console.log
+      `
+       <div class="container p-3 my-3 border" id = "contents${id}">
+        <label id="content${id}">Content:${contentValue}</label> 
+        <button onclick ="editContent('${id}')" >
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+        <button id = "Remove${id}" onclick="removeContent(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>`
+    }
+    function saveEditedContent(record,id)
+    {
+      if(Object.keys(record).length=='3')
+      {
+      let contentValue=record.content
+      $("#lecBox"+id).append(
+        `
+        <div class="container p-3 my-3 border" id = "contents${id}">
+        <label id="content${id}">Content:${contentValue}</label> 
+        <button onclick ="editContent('${id}')" >
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+        <button id = "Remove${id}" onclick="removeContent(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>
+        `
+        )
+      }
+    }
+
+    function removeContent(id)
+    {
+      id=id.slice(6)
+      $("#contents"+id).remove();
+      delete curriculumIndex[id].content;
+      console.log(curriculumIndex);
+    }
+
+    // for editing content
+
+    function editContent(ID)
+    {
+      let text="#textArea"+ID 
+      let con=curriculumIndex[ID].content
+      console.log("conis"+con);
+      $("#contents"+ID).replaceWith(`<br>
+        <div id="contents${ID}">
+        <textarea id="textArea${ID}" placeholder="Enter Your content" rows="4" cols="150" value="${con}">${con}</textarea>
+        <button type="button" id="content${ID}" onclick="getEditedContent(this.id)">Get Content</button>
+        </div>
+            `)
+    }
+
+   
+   function saveEditedContent(record,id)
+    {
+      if(Object.keys(record).length=='3')
+      {
+      console.log("ids"+id)
+      let textvalue=record.content
+      $("#lecBox"+id).append(`
+        <div class="container p-3 my-3 border" id = "contents${id}">
+        <label id="content${id}">Content:${textvalue}</label> 
+        <button onclick ="editContent('${id}')" >
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+        <button id = "Remove${id}" onclick="removeContent(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>
+        `)
+      }
+    }
+
+    //To edit lecture name
+
+    function editLectureName(index)
+    {
+      // changeLecName(index);
+      let labelId="#label"+index;
+      let oldLecName = curriculumIndex[index].lectureName;
+      $(labelId).replaceWith(`<input id = "textBox${index}" type = "text" class = "LectureName" maxlength = 80; placeholder = "Enter Lecture Name" style = "Width: 600px" value = '${oldLecName}'>
+        <button class ="SaveLectureName" id ="Save${index}" onclick = "saveLectureName('${index}')">Save Lecture</button>`);
+    }
+
+    // saving new lecture name
+
+     function saveLectureName(index)
+    {
+      let newLecName = $("#textBox"+index).val();
+      curriculumIndex[index].lectureName=newLecName
+      saveLecEle(index);
+    }
+
+    // To replace the new lecture name
+
+    function saveLecEle(index)
+    {
+      index=parseInt(index);
+      $("#textBox"+index).replaceWith(`
+        <label id = "label${index}">Lecture${index+1}: ${curriculumIndex[index].lectureName}</label>`);
+      $(`#Save${index}`).attr("hidden",true);
+      console.log(curriculumIndex);
+    }
+
+  </script>
+</head>
+
+<body>  
+<div class="container p-3 my-3 border" id='CurriculumForm'>
+  <h5>Unpublished section:</h5>
+  <button id="create" class="create" onclick="createLectureElement()">ADD</button>
+  <div id="curriculum">
+  </div>
+</div>
+</body>
+</html>
