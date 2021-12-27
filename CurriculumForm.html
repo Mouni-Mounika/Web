@@ -51,7 +51,7 @@
     {
       $(rootId).empty();
       curriculumIndex.forEach(renderLectures);
-      curriculumIndex.forEach(saveEditedContent)
+      curriculumIndex.forEach(saveContent)
       console.log(curriculumIndex)
     }
 
@@ -82,9 +82,8 @@
       console.log(curriculumIndex);
       $(rootId).empty();
       curriculumIndex.forEach(renderLectures);
-      curriculumIndex.forEach(saveEditedContent)
+      curriculumIndex.forEach(saveContent)
     }
-
 
     function addContent(id)
     {
@@ -93,7 +92,7 @@
       $(lecId).append(`<br>
         <div id="contentArea">
         <textarea id="textArea${id}" placeholder="Enter Your content" rows="4" cols="150"></textarea>
-        <button type="button" id="content${id}" onclick="getContent(this.id)">Get Textarea Content</button>
+        <button type="button" id="content${id}" onclick="getContent(this.id)">Get Content</button>
         </div>
             `)
     }
@@ -105,53 +104,34 @@
       let text="#textArea"+id 
       curriculumIndex[id].content=$(text).val()
       let textvalue=$(text).val()
-      saveContent("#contentArea",id)
-      console.log(curriculumIndex)
+      $(rootId).empty()
+      curriculumIndex.forEach(renderLectures)
+      curriculumIndex.forEach(saveContent)
     }
 
-    function getEditedContent(id)
-    {
-      id=id.slice(7);
-      let text="#textArea"+id 
-      curriculumIndex[id].content=$(text).val()
-      let textvalue=$(text).val()
-      saveContent("#contents"+id,id)
-    }
 
-    function saveContent(eleId,id)
-    {
-      let contentValue=curriculumIndex[id].content
-      $(eleId).replaceWith(
-        `
-        <div class="container p-3 my-3 border" id = "contents${id}">
-        <label id="content${id}">Content:${contentValue}</label> 
-        <button onclick ="editContent('${id}')" >
-                        <span class="glyphicon glyphicon-edit"></span>
-                    </button>
-        <button id = "Remove${id}" onclick="removeContent(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
-                    </div>
-        `
-        )
-    }
-
-    function saveEditedContent(record,id)
+    function saveContent(record,id)
     {
       if(Object.keys(record).length=='3')
       {
       let contentValue=record.content
-      $("#lecBox"+id).append(
-        `
-        <div class="container p-3 my-3 border" id = "contents${id}">
+      $("#lecBox"+id).append(contentElement(id,contentValue)
+        )
+      }
+    }
+    function contentElement(id,contentValue)
+    {
+      $("#lecBox"+id).append( 
+      `
+       <div class="container p-3 my-3 border" id = "contents${id}">
         <label id="content${id}">Content:${contentValue}</label> 
         <button onclick ="editContent('${id}')" >
                         <span class="glyphicon glyphicon-edit"></span>
                     </button>
         <button id = "Remove${id}" onclick="removeContent(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
-                    </div>
-        `
-        )
-      }
+                    </div>`);
     }
+    
 
     function removeContent(id)
     {
@@ -167,30 +147,12 @@
     {
       let text="#textArea"+id 
       let oldContent=curriculumIndex[id].content
-      // console.log("conis"+oldContent);
       $("#contents"+id).replaceWith(`<br>
         <div id="contents${id}">
         <textarea id="textArea${id}" placeholder="Enter Your content" rows="4" cols="150" value="${oldContent}">${oldContent}</textarea>
-        <button type="button" id="content${id}" onclick="getEditedContent(this.id)">Get Content</button>
+        <button type="button" id="content${id}" onclick="getContent(this.id)">Get Content</button>
         </div>
             `)
-    }
-   function saveEditedContent(record,id)
-    {
-      if(Object.keys(record).length=='3')
-      {
-      console.log("ids"+id)
-      let textvalue=record.content
-      $("#lecBox"+id).append(`
-        <div class="container p-3 my-3 border" id = "contents${id}">
-        <label id="content${id}">Content:${textvalue}</label> 
-        <button onclick ="editContent('${id}')" >
-                        <span class="glyphicon glyphicon-edit"></span>
-                    </button>
-        <button id = "Remove${id}" onclick="removeContent(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
-                    </div>
-        `)
-      }
     }
 
     //To edit lecture name
