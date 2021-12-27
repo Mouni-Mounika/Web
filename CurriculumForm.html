@@ -134,18 +134,6 @@
         )
     }
 
-    function contentElement(id,contentValue)
-    {
-      console.log
-      `
-       <div class="container p-3 my-3 border" id = "contents${id}">
-        <label id="content${id}">Content:${contentValue}</label> 
-        <button onclick ="editContent('${id}')" >
-                        <span class="glyphicon glyphicon-edit"></span>
-                    </button>
-        <button id = "Remove${id}" onclick="removeContent(this.id)"style="margin-left: 600px"><span class="glyphicon glyphicon-trash"></span></button>
-                    </div>`
-    }
     function saveEditedContent(record,id)
     {
       if(Object.keys(record).length=='3')
