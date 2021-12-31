@@ -1,0 +1,210 @@
+<!-- Adding New lecture -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adding new lecture</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="ejs.min.js"> </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script>
+    
+        let curriculumIndex = [];
+        const rootElement = $("#curriculum");
+        function addNewLecture()
+        {
+            const objLecture = {id: createUUID(), lectureNameState: "inputLec", lectureName: "", articleDraftStatus: false, article:{textData: "", state:"list" }};
+            curriculumIndex.push(objLecture);
+            console.log(curriculumIndex);
+            let lectureObjectId = objLecture.id;
+            let sectionDiv = renderTemplate(lectureObjectId);
+            appendDomTemp(sectionDiv, rootElement);
+        }
+        function appendDomTemp(domTemp, divId)
+        {   
+            $(divId).append(domTemp);
+        }
+        function saveLecture(objectId)
+        {  
+            let lectureObj = curriculumIndex.find(lectureObj => lectureObj.id === objectId);
+            let textboxValue = $(`#textbox${objectId}`).val();
+            lectureObj.lectureName = textboxValue;
+            lectureObj.lectureNameState = 'displayLec';
+            console.log(curriculumIndex); 
+            let template = renderTemplate(objectId);
+           let inputDiv =  $(`#inputDiv${objectId}`);
+           $(inputDiv).empty();
+           appendDomTemp(template, inputDiv);
+            
+        }
+         
+        function removeLec(objId)
+        {     
+            let sectionId = `#section${objId}`;
+            $(sectionId).remove();
+            let index = curriculumIndex.findIndex(arrIndex => arrIndex.id === objId);
+            curriculumIndex.splice(index, 1);
+            console.log(curriculumIndex);
+            $(curriculum).empty();
+            curriculumIndex.map(renderSectionDivElement); 
+
+        }
+        
+        function renderSectionDivElement(lectureObj)
+        {
+            setArticleDraftStatus(lectureObj.id);
+           lectureObj.lectureNameState = 'inputLec';
+           let sectionDivTemp =  renderTemplate(lectureObj.id)
+           appendDomTemp(sectionDivTemp, rootElement);
+           lectureObj.lectureNameState = 'displayLec';
+           let displayLectureNameTemp = renderTemplate(lectureObj.id)
+           let inputDiv =  $(`#inputDiv${lectureObj.id}`);
+           $(inputDiv).empty();
+           appendDomTemp(displayLectureNameTemp, inputDiv);
+           
+        }
+
+        function editLecName(objectId)
+        {
+            let lectureObj = curriculumIndex.find(lectureObj => lectureObj.id === objectId);
+            setArticleDraftStatus(objectId);
+            lectureObj.lectureNameState = 'inputLec';
+           let sectionDivTemp =  renderTemplate(objectId)
+            let lectureContainerDiv = $(`#lectureContainer${objectId}`);
+            $(lectureContainerDiv).empty();
+            let rendereSectiondiv =  renderTemplate(objectId);
+            appendDomTemp(sectionDivTemp, lectureContainerDiv);
+        }
+        function addContent(objectId)
+        {
+            let lectureObj = curriculumIndex.find(lectureObj => lectureObj.id === objectId);
+            setArticleDraftStatus(objectId);
+            lectureObj.article.state = "list";
+            lectureObj.lectureNameState = '';
+            let divElement = $(`#content${objectId}`);
+            renderArticle(objectId, divElement);
+        }
+        function setArticleDraftStatus(objectId)
+        {
+            let lectureObj = curriculumIndex.find(lectureObj => lectureObj.id === objectId);
+            lectureObj.articleDraftStatus = !(lectureObj.articleDraftStatus);
+        }
+        function addArticle(objectId)
+        {
+            let lectureObj = curriculumIndex.find(lectureObj => lectureObj.id === objectId);
+            lectureObj.article.state = "edit";
+            lectureObj.lectureNameState = '';
+            let divElement = $(`#articleDiv${objectId}`);
+            renderArticle(objectId, divElement);
+        }
+
+        function saveContent(objectId)
+        {
+            let lectureObj = curriculumIndex.find(lectureObj => lectureObj.id === objectId);
+            let textareaEleId = $(`#textarea${objectId}`);
+            let textData = $(textareaEleId).val();
+            lectureObj.article.textData = textData;
+            console.log(curriculumIndex);
+            lectureObj.article.state = "display";
+            let divElement = $(`#articleDiv${objectId}`);
+            renderArticle(objectId, divElement);
+        }
+
+        function displayAddConentOptions(objectId)
+         {
+            let lectureObj = curriculumIndex.find(lectureObj => lectureObj.id === objectId);
+            lectureObj.article.state = "list";
+            let divElement = $(`#content${objectId}`);
+            renderArticle(objectId, divElement);
+         }
+         function removeContentDiv(objectId)
+         {
+            let divElement = $(`#content${objectId}`);
+            $(divElement).empty();
+         }
+        function renderArticle(objectId, divElement)
+        {
+            let template = renderTemplate(objectId);
+            $(divElement).empty();
+            appendDomTemp(template, divElement);
+        }
+        function renderTemplate(objectId)
+        {
+            let index = curriculumIndex.findIndex(arrIndex => arrIndex.id === objectId);
+            const domTemplate = `
+            <% if( lectureObject.lectureNameState == 'inputLec') { %>
+            <div id = "lectureContainer<%= lectureObject.id %>">
+                    <div  id = section<%= lectureObject.id %> class = "addNewLecture" style = "border: 1px solid black; height : auto; width: 750px; margin-left: 120px; margin-top: 20px;">
+                        <div id = "inputDiv<%= lectureObject.id %>" class = "sections" style=" height: auto; margin-left: 0px; margin-top: 10px">
+                            <label>Lecture</label> <%= lectureNumber %>
+                            <label>:</label>
+                            <input id = "textbox<%= lectureObject.id %>" type = "text" class = "Lecture_Name" maxlength = 80; placeholde = "Enter Lecture name" style = "Width: 600px" value = "<%= lectureObject.lectureName %>">
+                            <div id = "saveAndRemoveBtnsDiv<%= lectureObject.id %>" class = "saveAndCancleButtonsContainer" style = "margin-left: 500px">
+                                <button class= "Remove" onclick = "removeLec('<%= lectureObject.id %>')">Remove</button>
+                                <button class ="saveLectureName" onclick = "saveLecture('<%= lectureObject.id %>')">Save Lecture</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            <% if( lectureObject.lectureNameState == 'displayLec') { %>
+                <label>Lecture</label> <label>:</label><%= lectureNumber %>
+                <label id = "label<%= lectureObject.id %>"><%= lectureObject.lectureName %></label>
+                <button id = "edit<%= lectureObject.id %>" onclick ="editLecName('<%= lectureObject.id %>')" >
+                    <span class="glyphicon glyphicon-edit"></span>
+                </button>
+                <button id = "del<%= lectureObject.id %>"  onclick = "removeLec('<%= lectureObject.id %>')" >
+                    <span class="glyphicon glyphicon-remove"></span></button>
+                <button onclick = "addContent('<%= lectureObject.id %>')">Add content</button>
+                <div id = "content<%= lectureObject.id %>" style = "height: auto;"></div>
+            <% } %>
+            <% if(lectureObject.articleDraftStatus) { %>
+                <% if( lectureObject.article.state == 'list') { %>
+                    <div id = articleDiv<%= lectureObject.id %>>
+                    <button onclick = removeContentDiv('<%= lectureObject.id %>')>Cancel</button>
+                    <button onclick = addArticle('<%= lectureObject.id %>')>Article</button>
+                    </div>
+                <% } %>
+                <% if(lectureObject.article.state == 'edit') { %>
+                    <textarea id = textarea<%= lectureObject.id %> rows = "5" cols = "50" ><%= lectureObject.article.textData %></textarea>
+                    <button onclick = displayAddConentOptions('<%= lectureObject.id %>')>Cancel</button>
+                    <button onclick = "saveContent('<%= lectureObject.id %>')">Save</button>
+                <% } %>
+                <% if(lectureObject.article.state == 'display') { %>
+                    <p>Content: <%= lectureObject.article.textData %></p>
+                    <button onclick = displayAddConentOptions('<%= lectureObject.id %>')>Cancel</button>
+                    <button onclick = "addArticle('<%= lectureObject.id %>')">Edit</button>
+                <% } %>
+            <% } %>
+            `;
+            let template = ejs.render(domTemplate, {lectureObject: curriculumIndex[index], lectureNumber: index +1});
+            return template;
+           
+        }
+
+        function createUUID(){
+            var dt = new Date().getTime();
+            var uuid = 'xxxxxxxxxxxx'.replace(/[x]/g, function(c) {
+                var r = (dt + Math.random()*16)%16 | 0;
+                dt = Math.floor(dt/16);
+                return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+            });
+            return uuid;
+        }
+    </script>
+
+</head>
+<body>
+    <body>  
+<div class="container p-3 my-3 border" id='CurriculumForm'>
+  <h5>Unpublished section:</h5>
+  <button id="create" class="create" onclick="addNewLecture()">ADD</button>
+   <div id = "curriculum" >
+    </div>
+</div>
+</body>
+</html>
